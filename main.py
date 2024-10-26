@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List, Annotated
+import models
 from database import engine, SessionLocal
 from sqlalchemy.orm import Session
 
@@ -27,6 +28,10 @@ def get_db():
 # Dependency Injection
 db_dependency = Annotated[Session, Depends(get_db)]
 
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
 @app.post("/questions/")
 async def create_question(question: QuestionBase, db: db_dependency):
     db_question = models.Questions(question_text=question.question_text)
@@ -35,6 +40,10 @@ async def create_question(question: QuestionBase, db: db_dependency):
     db.refresh(db_question)
 
     for choice in question.choices:
-        db_choice = model.Choices(choice.choice_text, is_correct=choice.is_correct, question_id=db_question.id)
+        db_choice = models.Choices(choice.choice_text, is_correct=choice.is_correct, question_id=db_question.id)
         db.add(db_choice)
     db.commit()
+
+@app.get("/questions/")
+async def get_questions(db: db_dependency):
+    return db.query(models.Questions).all()
