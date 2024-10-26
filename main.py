@@ -44,6 +44,11 @@ async def create_question(question: QuestionBase, db: db_dependency):
         db.add(db_choice)
     db.commit()
 
+@app.get("/questions/{question_id}")
+async def get_question(question_id: int, db: db_dependency):
+    return db.query(models.Questions).filter(models.Questions.id == question_id).first()
+
+
 @app.get("/questions/")
 async def get_questions(db: db_dependency):
     return db.query(models.Questions).all()
