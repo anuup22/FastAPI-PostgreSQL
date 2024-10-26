@@ -52,7 +52,7 @@ async def get_question(question_id: int, db: db_dependency):
 async def get_questions(db: db_dependency):
     return db.query(models.Questions).all()
 
-@app.get("choices/{question_id}")
+@app.get("/choices/{question_id}")
 async def get_choices(question_id: int, db: db_dependency):
     return db.query(models.Choices).filter(models.Choices.question_id == question_id).all()
 
