@@ -48,6 +48,12 @@ async def create_question(question: QuestionBase, db: db_dependency):
 async def get_question(question_id: int, db: db_dependency):
     return db.query(models.Questions).filter(models.Questions.id == question_id).first()
 
+@app.get("choices/{question_id}")
+async def get_choices(question_id: int, db: db_dependency):
+    result = db.query(models.Choices).filter(models.Choices.question_id == question_id).all()
+    if not result:
+        raise HTTPException(status_code=404, detail="Choices not found")
+    return result
 
 @app.get("/questions/")
 async def get_questions(db: db_dependency):
