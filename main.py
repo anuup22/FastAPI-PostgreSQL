@@ -47,3 +47,9 @@ async def create_question(question: QuestionBase, db: db_dependency):
 @app.get("/questions/")
 async def get_questions(db: db_dependency):
     return db.query(models.Questions).all()
+
+@app.delete("/questions/{question_id}")
+async def delete_question(question_id: int, db: db_dependency):
+    db.query(models.Questions).filter(models.Questions.id == question_id).delete()
+    db.commit()
+    return {"message": "Question deleted successfully"}
