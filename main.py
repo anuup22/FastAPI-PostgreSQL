@@ -18,6 +18,9 @@ class QuestionBase(BaseModel):
     question_text: str
     choices: List[ChoiceBase]
 
+class RootResponse(BaseModel):
+    message: str
+
 def get_db():
     db = SessionLocal()
     try:
@@ -29,8 +32,9 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def root() -> RootResponse:
+    '''This is the root path'''
+    return RootResponse(message="Welcome to the Quiz Application API")
 
 @app.post("/questions/")
 async def create_question(question: QuestionBase, db: db_dependency):
